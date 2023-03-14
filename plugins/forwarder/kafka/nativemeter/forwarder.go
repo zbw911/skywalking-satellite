@@ -29,7 +29,6 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
-	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -45,7 +44,6 @@ type Forwarder struct {
 	RoutingRuleLRUCacheTTL int    `mapstructure:"routing_rule_lru_cache_ttl"`
 	Topic                  string `mapstructure:"topic"` // The forwarder topic.
 	producer               sarama.SyncProducer
-	meterClient            v3.MeterReportServiceClient
 	upstreamCache          *cache.LRUExpireCache
 	upstreamCacheExpire    time.Duration
 }
@@ -105,9 +103,8 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 				Key:   sarama.StringEncoder(firstMeter.ServiceInstance),
 				Value: sarama.ByteEncoder(rawdata),
 			})
-
+			continue
 		}
-
 	}
 	return f.producer.SendMessages(message)
 }

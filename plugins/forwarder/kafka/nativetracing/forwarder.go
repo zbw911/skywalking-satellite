@@ -98,12 +98,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		default:
 			continue
 		}
-		//data := e.GetData().(*v1.SniffData_Segment)
-		//
-		//message = append(message, &sarama.ProducerMessage{
-		//	Topic: f.Topic,
-		//	Value: sarama.ByteEncoder(data.Segment),
-		//})
 	}
 	return f.producer.SendMessages(message)
 }
