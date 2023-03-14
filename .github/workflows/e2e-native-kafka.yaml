@@ -20,7 +20,7 @@ on:
   push:
     branches:
       - main
-      - kafka
+      - kafka-forwards-test
 
 jobs:
   NativeProtocolsE2E:
