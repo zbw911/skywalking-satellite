@@ -82,9 +82,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		//for (LogData data : dataList) {
-		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
-		//}
 		for _, logData := range data.LogList.Logs {
 			logdata := &v3.LogData{}
 			err := proto.Unmarshal(logData, logdata)
