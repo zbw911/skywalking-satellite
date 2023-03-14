@@ -81,7 +81,6 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-
 	pingOnce := make(map[string]void)
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
@@ -119,7 +118,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			}
 			continue
 		}
-
 	}
 	return f.producer.SendMessages(message)
 }
