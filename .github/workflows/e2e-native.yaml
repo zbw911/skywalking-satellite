@@ -21,6 +21,7 @@ on:
     branches:
       - main
       - kafka-forwards-test
+      - kafka-forwards
 
 jobs:
   NativeProtocolsE2E:
