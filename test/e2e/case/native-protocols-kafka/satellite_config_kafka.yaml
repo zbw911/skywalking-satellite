@@ -259,10 +259,6 @@ pipes:
       client_name: grpc-client
       forwarders:
         - plugin_name: native-profile-grpc-forwarder
-#      client_name: kafka-client
-#      forwarders:
-#        - plugin_name: native-profile-kafka-forwarder
-#          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_PROFILINGS:skywalking-profilings}
   - common_config:
       pipe_name: cdspipe
     gatherer:
