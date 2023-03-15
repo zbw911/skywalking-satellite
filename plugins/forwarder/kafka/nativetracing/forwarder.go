@@ -25,7 +25,6 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
@@ -98,9 +97,16 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			// https://github.com/apache/skywalking-data-collect-protocol/blob/0da9c8b3e111fb51c9f8854cae16d4519462ecfe
 			// /language-agent/Tracing.proto#L244
 			// ref: https://github.com/apache/skywalking-satellite/pull/128#discussion_r1136909393
-			log.Logger.WithField("pipe", f.PipeName).Warnf("native-tracing-kafka-forwarder " +
-				"does not support messages of type SpanAttachedEvent and has discarded them." +
-				" Please choose native-tracing-grpc-forwarder as a replacement.")
+			spanAttachedEvent := &v3.SpanAttachedEvent{}
+			err := proto.Unmarshal(data.SpanAttachedEvent, spanAttachedEvent)
+			if err != nil {
+				return err
+			}
+			message = append(message, &sarama.ProducerMessage{
+				Topic: f.Topic,
+				Key:   sarama.StringEncoder(spanAttachedEvent.TraceContext.GetTraceSegmentId()),
+				Value: sarama.ByteEncoder(data.SpanAttachedEvent),
+			})
 		default:
 			continue
 		}
