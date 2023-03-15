@@ -61,3 +61,11 @@ verify:
         end=$(swctl --base-url=http://${oap_host}:${oap_12800}/graphql --display yaml profiling ebpf schedules --task-id=$taskid | yq e '.[0].endtime' -)
         swctl --base-url=http://${oap_host}:${oap_12800}/graphql --display yaml profiling ebpf analysis --schedule-id=$scheduleid --time-ranges=$start-$end
       expected: profiling-analysis.yml
+
+    # slow traces
+    - query: |
+        traceid=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql records list \
+        --name=sampled_slow_trace_record --service-name service --instance-name test --process-name service \
+        --dest-service-name service --dest-instance-name test --dest-process-name UNKNOWN_REMOTE 100 | yq e '. | map(select(.name == "skywalking-/provider")).[0].id' -);
+         swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $traceid
+      expected: expected/skywalking-trace.yml
